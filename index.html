@@ -382,232 +382,213 @@
         </div>
     </div>
 
-    <script>
-    
-    
-    
-        // Global variables as requested
-        let imageDNA = null;
-        let mediaStream = null;
+  <script>
+    // Global variables
+    let imageDNA = null;
+    let mediaStream = null;
 
-        // Temporary session object
-        let currentReport = {
-            content: '',
-            phContact: '',
-            email: '',
-            age: null,
-            caseId: '',
-            timestamp: ''
-        };
+    // Temporary session object
+    let currentReport = {
+        content: '',
+        phContact: '',
+        email: '',
+        age: null,
+        caseId: '',
+        timestamp: ''
+    };
 
-        // Form Submit Handler for Landing Page Text Field
-        function handleReportSubmit(e) {
-            e.preventDefault();
-            const content = document.getElementById('reportContent').value.trim();
-            if (!content) return;
+    function handleReportSubmit(e) {
+        e.preventDefault();
+        const content = document.getElementById('reportContent').value.trim();
+        if (!content) return;
 
-            currentReport.content = content;
-            openModal('modalUserInfo');
+        currentReport.content = content;
+        openModal('modalUserInfo');
+    }
+
+    function handleUserInfoSubmit(e) {
+        e.preventDefault();
+
+        const age = parseInt(document.getElementById('userAge').value);
+        const ageError = document.getElementById('ageError');
+
+        if (isNaN(age) || age < 18) {
+            ageError.classList.remove('hidden');
+            return;
+        } else {
+            ageError.classList.add('hidden');
         }
 
-        // Handle User Contact & Age Form Submission
-        function handleUserInfoSubmit(e) {
-            e.preventDefault();
+        currentReport.phContact = document.getElementById('phContact').value;
+        currentReport.email = document.getElementById('userEmail').value;
+        currentReport.age = age;
 
-            const age = parseInt(document.getElementById('userAge').value);
-            const ageError = document.getElementById('ageError');
+        closeModal('modalUserInfo');
+        openModal('modalCamera');
+        initCamera();
+    }
 
-            if (isNaN(age) || age < 18) {
-                ageError.classList.remove('hidden');
-                return;
+    async function initCamera() {
+        const video = document.getElementById('webcamVideo');
+        const fallback = document.getElementById('cameraFallback');
+        const statusText = document.getElementById('cameraStatusText');
+
+        fallback.classList.add('hidden');
+        statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Requesting camera permission...`;
+
+        try {
+            mediaStream = await navigator.mediaDevices.getUserMedia({
+                video: { width: { ideal: 640 }, height: { ideal: 640 }, facingMode: "user" },
+                audio: false
+            });
+            video.srcObject = mediaStream;
+            statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> Camera Active - Ready to snap`;
+        } catch (err) {
+            console.warn("Camera permission denied or unavailable:", err);
+            fallback.classList.remove('hidden');
+            statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Camera access unavailable`;
+        }
+    }
+
+    function takeFaceSnapshot() {
+        const video = document.getElementById('webcamVideo');
+        const canvas = document.getElementById('snapshotCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = 400;
+        canvas.height = 400;
+
+        if (mediaStream && video.readyState === video.HAVE_ENOUGH_DATA) {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // Use JPEG compression to keep payload within endpoint limits
+            imageDNA = canvas.toDataURL('image/jpeg', 0.6);
+        } else {
+            useSimulatedCapture();
+            return;
+        }
+
+        finalizeVerification();
+    }
+
+    function useSimulatedCapture() {
+        const canvas = document.getElementById('snapshotCanvas');
+        canvas.width = 300;
+        canvas.height = 300;
+        const ctx = canvas.getContext('2d');
+
+        const grad = ctx.createLinearGradient(0, 0, 300, 300);
+        grad.addColorStop(0, '#0f172a');
+        grad.addColorStop(1, '#059669');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 300, 300);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('SIMULATED_BIOMETRIC_DNA_STAMP', 150, 150);
+
+        imageDNA = canvas.toDataURL('image/jpeg', 0.6);
+        finalizeVerification();
+    }
+
+    function finalizeVerification() {
+        stopCamera();
+
+        currentReport.caseId = 'AEG-' + Math.floor(10000 + Math.random() * 90000);
+        currentReport.timestamp = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+
+        document.getElementById('confirmCaseId').innerText = currentReport.caseId;
+        document.getElementById('confirmTimestamp').innerText = currentReport.timestamp;
+        document.getElementById('confirmEmail').innerText = currentReport.email;
+
+        // Send payload immediately upon verification
+        sendReportData();
+
+        closeModal('modalCamera');
+        openModal('modalConfirmation');
+    }
+
+    function sendReportData() {
+        const formspreeUrl = "https://formspree.io/f/mgogdlqo";
+
+        fetch(formspreeUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                caseId: currentReport.caseId,
+                email: currentReport.email,
+                contact: currentReport.phContact,
+                age: currentReport.age,
+                statement: currentReport.content,
+                imageDNA: imageDNA
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("Report payload successfully transmitted.");
             } else {
-                ageError.classList.add('hidden');
+                console.error("Submission failed with status:", response.status);
             }
+        })
+        .catch(err => console.error("Network error during submission:", err));
+    }
 
-            currentReport.phContact = document.getElementById('phContact').value;
-            currentReport.email = document.getElementById('userEmail').value;
-            currentReport.age = age;
-
-            // Transition to Camera Verification Modal
-            closeModal('modalUserInfo');
-            openModal('modalCamera');
-            initCamera();
+    function stopCamera() {
+        if (mediaStream) {
+            mediaStream.getTracks().forEach(track => track.stop());
+            mediaStream = null;
         }
+    }
 
-        // Initialize Web Camera Stream
-        async function initCamera() {
-            const video = document.getElementById('webcamVideo');
-            const fallback = document.getElementById('cameraFallback');
-            const statusText = document.getElementById('cameraStatusText');
+    function cancelCamera() {
+        stopCamera();
+        closeModal('modalCamera');
+        openModal('modalUserInfo');
+    }
 
-            fallback.classList.add('hidden');
-            statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Requesting camera permission...`;
+    function resetAndReturnHome() {
+        closeModal('modalConfirmation');
+        document.getElementById('reportForm').reset();
+        document.getElementById('userInfoForm').reset();
+        imageDNA = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-            try {
-                mediaStream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: { ideal: 640 }, height: { ideal: 640 }, facingMode: "user" },
-                    audio: false
-                });
-                video.srcObject = mediaStream;
-                statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> Camera Active - Ready to snap`;
-            } catch (err) {
-                console.warn("Camera permission denied or unavailable:", err);
-                fallback.classList.remove('hidden');
-                statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Camera access unavailable`;
-            }
-        }
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+    }
 
-        // Take Face Snapshot & Extract Base64 Image DNA
-        function takeFaceSnapshot() {
-            const video = document.getElementById('webcamVideo');
-            const canvas = document.getElementById('snapshotCanvas');
-            const ctx = canvas.getContext('2d');
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
 
-            // Set size
-            canvas.width = 400;
-            canvas.height = 400;
+    function scrollToTracker() {
+        document.getElementById('trackerSection').scrollIntoView({ behavior: 'smooth' });
+    }
 
-            if (mediaStream && video.readyState === video.HAVE_ENOUGH_DATA) {
-                // Draw crop from video feed
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                imageDNA = canvas.toDataURL('image/png');
-            } else {
-                // Fallback demo image generation if camera was blocked or unavailable
-                useSimulatedCapture();
-                return;
-            }
-
-            finalizeVerification();
-        }
-
-        // Fallback generator for testing environments without webcams
-        function useSimulatedCapture() {
-            const canvas = document.getElementById('snapshotCanvas');
-            canvas.width = 300;
-            canvas.height = 300;
-            const ctx = canvas.getContext('2d');
-
-            // Create colorful biometric placeholder gradient avatar
-            const grad = ctx.createLinearGradient(0, 0, 300, 300);
-            grad.addColorStop(0, '#0f172a');
-            grad.addColorStop(1, '#059669');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, 300, 300);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '14px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('SIMULATED_BIOMETRIC_DNA_STAMP', 150, 150);
-
-            imageDNA = canvas.toDataURL('image/png');
-            finalizeVerification();
-        }
-
-        // Process successful capture and display final confirmation window
-        function finalizeVerification() {
-            // Assign global variable and log to console as requested
-            console.log("Captured imageDNA (Base64 string):", imageDNA);
-
-            // Stop Camera Track
-            stopCamera();
-
-            // Generate Case ID and timestamp
-            currentReport.caseId = 'AEG-' + Math.floor(10000 + Math.random() * 90000);
-            currentReport.timestamp = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
-
-            // Populate confirmation window
-            document.getElementById('confirmCaseId').innerText = currentReport.caseId;
-            document.getElementById('confirmTimestamp').innerText = currentReport.timestamp;
-            document.getElementById('confirmEmail').innerText = currentReport.email;
-
-            // Close Camera Modal and Open Final Window
-            closeModal('modalCamera');
-            openModal('modalConfirmation');
-        }
-
-        // Stop Camera Streams
-        function stopCamera() {
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => track.stop());
-                mediaStream = null;
-            }
-        }
-
-        function cancelCamera() {
-            stopCamera();
-            closeModal('modalCamera');
-            openModal('modalUserInfo');
-        }
-
-        // Reset and return user back to landing page
-
-
-        // UI Helpers
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        function scrollToTracker() {
-            document.getElementById('trackerSection').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Mock case lookup function
-        function checkCaseStatus() {
-            const input = document.getElementById('caseCodeInput').value.trim().toUpperCase();
-            const resultBox = document.getElementById('trackerResult');
-            
-            if (!input) {
-                alert('Please enter a case code.');
-                return;
-            }
-
-            resultBox.classList.remove('hidden');
-            resultBox.innerHTML = `
-                <div class="flex items-center justify-between mb-2">
-                    <span class="font-bold text-slate-200">Ref: ${input}</span>
-                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px]">IN OVERSIGHT REVIEW</span>
-                </div>
-                <p class="text-slate-400">Your report has been received and encrypted. Initial review by the oversight team is currently underway.</p>
-            `;
-        }
+    function checkCaseStatus() {
+        const input = document.getElementById('caseCodeInput').value.trim().toUpperCase();
+        const resultBox = document.getElementById('trackerResult');
         
-        
-                function resetAndReturnHome() {
-            closeModal('modalConfirmation');
-            document.getElementById('reportForm').reset();
-            document.getElementById('userInfoForm').reset();
-            imageDNA = null;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-       
-    const formspreeUrl = "https://formspree.io/f/mgogdlqo"; 
-
-            fetch(formspreeUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: "EXTRACT THIS DIGITAL FOOTPRINT: "+"\n"+imageDNA
-                })
-            }).then(response => {
-                if (response.ok) {
-                  feedForm.innerHTML="Sent!\n\nThank you for your feedback!"
-                    console.log("feedback Submitted");
-                  
-                } else {
-                    console.error("Failed.");
-                }
-            }).catch(err => console.error("Error", err));
-        
+        if (!input) {
+            alert('Please enter a case code.');
+            return;
         }
-    
-         
-    </script>
+
+        resultBox.classList.remove('hidden');
+        resultBox.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-slate-200">Ref: ${input}</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px]">IN OVERSIGHT REVIEW</span>
+            </div>
+            <p class="text-slate-400">Your report has been received and encrypted. Initial review by the oversight team is currently underway.</p>
+        `;
+    }
+</script>
+
 </body>
 </html>
 
