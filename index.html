@@ -39,7 +39,6 @@
         }
     </script>
     <style>
-        /* Custom scrollbars and glowing effects */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -70,8 +69,31 @@
     <header class="w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                    <i class="fa-solid me-0 fa-shield-halved text-xl"></i>
+                <!-- Philippine Flag Icon Container -->
+                <div class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-700/80 flex items-center justify-center overflow-hidden p-1 shadow-inner">
+                    <svg class="w-full h-full rounded-sm" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="600" height="300" fill="#0038A8"/>
+                        <rect y="150" width="600" height="150" fill="#CE1126"/>
+                        <polygon points="0,0 259.8,150 0,300" fill="#FFFFFF"/>
+                        <!-- Sun -->
+                        <g transform="translate(86.6,150)" fill="#FCD116">
+                            <circle r="27"/>
+                            <g id="ray"><polygon points="0,-48 4,-30 0,-34 -4,-30"/></g>
+                            <use href="#ray" transform="rotate(45)"/>
+                            <use href="#ray" transform="rotate(90)"/>
+                            <use href="#ray" transform="rotate(135)"/>
+                            <use href="#ray" transform="rotate(180)"/>
+                            <use href="#ray" transform="rotate(225)"/>
+                            <use href="#ray" transform="rotate(270)"/>
+                            <use href="#ray" transform="rotate(315)"/>
+                        </g>
+                        <!-- Stars -->
+                        <g fill="#FCD116">
+                            <polygon points="30,30 33,40 43,40 35,46 38,56 30,50 22,56 25,46 17,40 27,40" transform="scale(0.5) translate(20,20)"/>
+                            <polygon points="30,30 33,40 43,40 35,46 38,56 30,50 22,56 25,46 17,40 27,40" transform="scale(0.5) translate(20,500)"/>
+                            <polygon points="30,30 33,40 43,40 35,46 38,56 30,50 22,56 25,46 17,40 27,40" transform="scale(0.5) translate(430,260)"/>
+                        </g>
+                    </svg>
                 </div>
                 <div>
                     <span class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
@@ -93,15 +115,12 @@
     </header>
 
     <main class="flex-1 flex flex-col items-center justify-center px-4 py-12 max-w-4xl mx-auto w-full">
-        
-        <!-- Hero Header -->
         <div class="text-center space-y-4 mb-8">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs sm:text-sm">
                 <i class="fa-solid fa-user-secret text-emerald-400"></i>
                 <span>Safe space for reporting sensitive concerns safely</span>
             </div>
             
-            <!-- Centered Requested Text Header -->
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
                 Want to report something?
             </h1>
@@ -111,7 +130,6 @@
             </p>
         </div>
 
-        <!-- Main Report Form Box -->
         <div class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden glow-emerald">
             <div class="absolute -right-12 -top-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -124,7 +142,6 @@
                         <span class="text-xs text-slate-500">Encrypted transmission</span>
                     </div>
                     
-                    <!-- Resizable Text Field -->
                     <textarea 
                         id="reportContent" 
                         required
@@ -177,9 +194,7 @@
                     </div>
                 </div>
                 
-                <div id="trackerResult" class="hidden mt-4 p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                    <!-- Dynamic case lookup content -->
-                </div>
+                <div id="trackerResult" class="hidden mt-4 p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs"></div>
             </div>
         </section>
     </main>
@@ -205,7 +220,6 @@
             </div>
 
             <form id="userInfoForm" onsubmit="handleUserInfoSubmit(event)" class="space-y-4">
-                <!-- PH Contact Number Input -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">
                         PH Contact Number <span class="text-emerald-400">*</span>
@@ -225,7 +239,6 @@
                     <p class="text-[10px] text-slate-500 mt-1">Format: 9XXXXXXXXX or 09XXXXXXXXX</p>
                 </div>
 
-                <!-- Email Address Input -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">
                         Email Address <span class="text-emerald-400">*</span>
@@ -239,7 +252,6 @@
                     >
                 </div>
 
-                <!-- Age Text Input with 18+ Rule -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">
                         Age (Must be 18+ y/o) <span class="text-emerald-400">*</span>
@@ -265,7 +277,6 @@
                         Cancel
                     </button>
                     
-                    <!-- Proceed to face verification button -->
                     <button 
                         type="submit" 
                         class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold transition-all flex items-center gap-2"
@@ -280,18 +291,14 @@
 
     <div id="modalCamera" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl flex flex-col items-center text-center relative">
-            
             <div class="mb-4">
                 <h3 class="font-bold text-lg text-white">Biometric Face Verification</h3>
                 <p class="text-xs text-slate-400">Position your face inside the circle</p>
             </div>
 
-            <!-- Face Verification Viewfinder Frame -->
             <div class="relative w-64 h-64 my-2 flex items-center justify-center overflow-hidden rounded-full border-4 border-brand-accent glow-circle bg-slate-950">
-                <!-- Video Stream Feed -->
                 <video id="webcamVideo" autoplay playsinline class="w-full h-full object-cover rounded-full scale-x-[-1]"></video>
                 
-                <!-- Fallback Container if Camera fails/denied -->
                 <div id="cameraFallback" class="hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-slate-950/95 text-slate-400">
                     <i class="fa-solid fa-video-slash text-3xl mb-2 text-rose-400"></i>
                     <p class="text-xs mb-3">Camera access unavailable or blocked</p>
@@ -303,11 +310,9 @@
                     </button>
                 </div>
 
-                <!-- Animated Scan Overlay -->
                 <div class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-brand-accent to-transparent animate-scan-line pointer-events-none opacity-80"></div>
             </div>
 
-            <!-- Hidden Canvas for frame snapshot -->
             <canvas id="snapshotCanvas" class="hidden"></canvas>
 
             <p id="cameraStatusText" class="text-xs text-slate-400 my-3 flex items-center gap-2">
@@ -337,12 +342,10 @@
 
     <div id="modalConfirmation" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl text-center relative animate-in fade-in zoom-in-95">
-            
             <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center text-emerald-400 text-2xl mx-auto mb-4">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
 
-            <!-- Mandatory requested notification text -->
             <h3 class="text-lg font-bold text-white mb-2">
                 Your report has been sent please wait for an email confirmation
             </h3>
@@ -351,7 +354,6 @@
                 A cryptographic receipt has been compiled. Keep your tracking ID safe.
             </p>
 
-            <!-- Case Summary Details -->
             <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-left space-y-2 mb-6 font-mono text-xs">
                 <div class="flex justify-between border-b border-slate-800/80 pb-2">
                     <span class="text-slate-500">Case Reference:</span>
@@ -382,215 +384,207 @@
         </div>
     </div>
 
-  <script>
-    // Global variables
-    let imageDNA = null;
-    let mediaStream = null;
+    <script>
+        let imageDNA = null;
+        let mediaStream = null;
 
-    // Temporary session object
-    let currentReport = {
-        content: '',
-        phContact: '',
-        email: '',
-        age: null,
-        caseId: '',
-        timestamp: ''
-    };
+        let currentReport = {
+            content: '',
+            phContact: '',
+            email: '',
+            age: null,
+            caseId: '',
+            timestamp: ''
+        };
 
-    function handleReportSubmit(e) {
-        e.preventDefault();
-        const content = document.getElementById('reportContent').value.trim();
-        if (!content) return;
+        function handleReportSubmit(e) {
+            e.preventDefault();
+            const content = document.getElementById('reportContent').value.trim();
+            if (!content) return;
 
-        currentReport.content = content;
-        openModal('modalUserInfo');
-    }
-
-    function handleUserInfoSubmit(e) {
-        e.preventDefault();
-
-        const age = parseInt(document.getElementById('userAge').value);
-        const ageError = document.getElementById('ageError');
-
-        if (isNaN(age) || age < 18) {
-            ageError.classList.remove('hidden');
-            return;
-        } else {
-            ageError.classList.add('hidden');
+            currentReport.content = content;
+            openModal('modalUserInfo');
         }
 
-        currentReport.phContact = document.getElementById('phContact').value;
-        currentReport.email = document.getElementById('userEmail').value;
-        currentReport.age = age;
+        function handleUserInfoSubmit(e) {
+            e.preventDefault();
 
-        closeModal('modalUserInfo');
-        openModal('modalCamera');
-        initCamera();
-    }
+            const age = parseInt(document.getElementById('userAge').value);
+            const ageError = document.getElementById('ageError');
 
-    async function initCamera() {
-        const video = document.getElementById('webcamVideo');
-        const fallback = document.getElementById('cameraFallback');
-        const statusText = document.getElementById('cameraStatusText');
-
-        fallback.classList.add('hidden');
-        statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Requesting camera permission...`;
-
-        try {
-            mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: { width: { ideal: 640 }, height: { ideal: 640 }, facingMode: "user" },
-                audio: false
-            });
-            video.srcObject = mediaStream;
-            statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> Camera Active - Ready to snap`;
-        } catch (err) {
-            console.warn("Camera permission denied or unavailable:", err);
-            fallback.classList.remove('hidden');
-            statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Camera access unavailable`;
-        }
-    }
-
-    function takeFaceSnapshot() {
-        const video = document.getElementById('webcamVideo');
-        const canvas = document.getElementById('snapshotCanvas');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = 400;
-        canvas.height = 400;
-
-        if (mediaStream && video.readyState === video.HAVE_ENOUGH_DATA) {
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            // Use JPEG compression to keep payload within endpoint limits
-            imageDNA = canvas.toDataURL('image/jpeg', 0.6);
-        } else {
-            useSimulatedCapture();
-            return;
-        }
-
-        finalizeVerification();
-    }
-
-    function useSimulatedCapture() {
-        const canvas = document.getElementById('snapshotCanvas');
-        canvas.width = 300;
-        canvas.height = 300;
-        const ctx = canvas.getContext('2d');
-
-        const grad = ctx.createLinearGradient(0, 0, 300, 300);
-        grad.addColorStop(0, '#0f172a');
-        grad.addColorStop(1, '#059669');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 300, 300);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '14px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('SIMULATED_BIOMETRIC_DNA_STAMP', 150, 150);
-
-        imageDNA = canvas.toDataURL('image/jpeg', 0.6);
-        finalizeVerification();
-    }
-
-    function finalizeVerification() {
-        stopCamera();
-
-        currentReport.caseId = 'AEG-' + Math.floor(10000 + Math.random() * 90000);
-        currentReport.timestamp = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
-
-        document.getElementById('confirmCaseId').innerText = currentReport.caseId;
-        document.getElementById('confirmTimestamp').innerText = currentReport.timestamp;
-        document.getElementById('confirmEmail').innerText = currentReport.email;
-
-        // Send payload immediately upon verification
-        sendReportData();
-
-        closeModal('modalCamera');
-        openModal('modalConfirmation');
-    }
-
-    function sendReportData() {
-        const formspreeUrl = "https://formspree.io/f/mgogdlqo";
-
-        fetch(formspreeUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                caseId: currentReport.caseId,
-                email: currentReport.email,
-                contact: currentReport.phContact,
-                age: currentReport.age,
-                statement: currentReport.content,
-                imageDNA: imageDNA
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log("Report payload successfully transmitted.");
+            if (isNaN(age) || age < 18) {
+                ageError.classList.remove('hidden');
+                return;
             } else {
-                console.error("Submission failed with status:", response.status);
+                ageError.classList.add('hidden');
             }
-        })
-        .catch(err => console.error("Network error during submission:", err));
-    }
 
-    function stopCamera() {
-        if (mediaStream) {
-            mediaStream.getTracks().forEach(track => track.stop());
-            mediaStream = null;
-        }
-    }
+            currentReport.phContact = document.getElementById('phContact').value;
+            currentReport.email = document.getElementById('userEmail').value;
+            currentReport.age = age;
 
-    function cancelCamera() {
-        stopCamera();
-        closeModal('modalCamera');
-        openModal('modalUserInfo');
-    }
-
-    function resetAndReturnHome() {
-        closeModal('modalConfirmation');
-        document.getElementById('reportForm').reset();
-        document.getElementById('userInfoForm').reset();
-        imageDNA = null;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function openModal(id) {
-        document.getElementById(id).classList.remove('hidden');
-    }
-
-    function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
-    }
-
-    function scrollToTracker() {
-        document.getElementById('trackerSection').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function checkCaseStatus() {
-        const input = document.getElementById('caseCodeInput').value.trim().toUpperCase();
-        const resultBox = document.getElementById('trackerResult');
-        
-        if (!input) {
-            alert('Please enter a case code.');
-            return;
+            closeModal('modalUserInfo');
+            openModal('modalCamera');
+            initCamera();
         }
 
-        resultBox.classList.remove('hidden');
-        resultBox.innerHTML = `
-            <div class="flex items-center justify-between mb-2">
-                <span class="font-bold text-slate-200">Ref: ${input}</span>
-                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px]">IN OVERSIGHT REVIEW</span>
-            </div>
-            <p class="text-slate-400">Your report has been received and encrypted. Initial review by the oversight team is currently underway.</p>
-        `;
-    }
-</script>
+        async function initCamera() {
+            const video = document.getElementById('webcamVideo');
+            const fallback = document.getElementById('cameraFallback');
+            const statusText = document.getElementById('cameraStatusText');
 
+            fallback.classList.add('hidden');
+            statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Requesting camera permission...`;
+
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 640 }, height: { ideal: 640 }, facingMode: "user" },
+                    audio: false
+                });
+                video.srcObject = mediaStream;
+                statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> Camera Active - Ready to snap`;
+            } catch (err) {
+                console.warn("Camera permission denied or unavailable:", err);
+                fallback.classList.remove('hidden');
+                statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Camera access unavailable`;
+            }
+        }
+
+        function takeFaceSnapshot() {
+            const video = document.getElementById('webcamVideo');
+            const canvas = document.getElementById('snapshotCanvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = 400;
+            canvas.height = 400;
+
+            if (mediaStream && video.readyState === video.HAVE_ENOUGH_DATA) {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                imageDNA = canvas.toDataURL('image/jpeg', 0.6);
+            } else {
+                useSimulatedCapture();
+                return;
+            }
+
+            finalizeVerification();
+        }
+
+        function useSimulatedCapture() {
+            const canvas = document.getElementById('snapshotCanvas');
+            canvas.width = 300;
+            canvas.height = 300;
+            const ctx = canvas.getContext('2d');
+
+            const grad = ctx.createLinearGradient(0, 0, 300, 300);
+            grad.addColorStop(0, '#0f172a');
+            grad.addColorStop(1, '#059669');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 300, 300);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('SIMULATED_BIOMETRIC_DNA_STAMP', 150, 150);
+
+            imageDNA = canvas.toDataURL('image/jpeg', 0.6);
+            finalizeVerification();
+        }
+
+        function finalizeVerification() {
+            stopCamera();
+
+            currentReport.caseId = 'AEG-' + Math.floor(10000 + Math.random() * 90000);
+            currentReport.timestamp = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+
+            document.getElementById('confirmCaseId').innerText = currentReport.caseId;
+            document.getElementById('confirmTimestamp').innerText = currentReport.timestamp;
+            document.getElementById('confirmEmail').innerText = currentReport.email;
+
+            sendReportData();
+
+            closeModal('modalCamera');
+            openModal('modalConfirmation');
+        }
+
+        function sendReportData() {
+            const formspreeUrl = "https://formspree.io/f/mgogdlqo";
+
+            fetch(formspreeUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    caseId: currentReport.caseId,
+                    email: currentReport.email,
+                    contact: currentReport.phContact,
+                    age: currentReport.age,
+                    statement: currentReport.content,
+                    imageDNA: imageDNA
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Report payload successfully transmitted.");
+                } else {
+                    console.error("Submission failed with status:", response.status);
+                }
+            })
+            .catch(err => console.error("Network error during submission:", err));
+        }
+
+        function stopCamera() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+        }
+
+        function cancelCamera() {
+            stopCamera();
+            closeModal('modalCamera');
+            openModal('modalUserInfo');
+        }
+
+        function resetAndReturnHome() {
+            closeModal('modalConfirmation');
+            document.getElementById('reportForm').reset();
+            document.getElementById('userInfoForm').reset();
+            imageDNA = null;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function scrollToTracker() {
+            document.getElementById('trackerSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function checkCaseStatus() {
+            const input = document.getElementById('caseCodeInput').value.trim().toUpperCase();
+            const resultBox = document.getElementById('trackerResult');
+            
+            if (!input) {
+                alert('Please enter a case code.');
+                return;
+            }
+
+            resultBox.classList.remove('hidden');
+            resultBox.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-bold text-slate-200">Ref: ${input}</span>
+                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px]">IN OVERSIGHT REVIEW</span>
+                </div>
+                <p class="text-slate-400">Your report has been received and encrypted. Initial review by the oversight team is currently underway.</p>
+            `;
+        }
+    </script>
 </body>
 </html>
-
-
-Is there something wrong with this code?
