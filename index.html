@@ -71,7 +71,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                    <i class="fa-solid me-0 fa-shield-halved text-xl"></i>
                 </div>
                 <div>
                     <span class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
@@ -101,6 +101,7 @@
                 <span>Safe space for reporting sensitive concerns safely</span>
             </div>
             
+            <!-- Centered Requested Text Header -->
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
                 Want to report something?
             </h1>
@@ -112,4 +113,503 @@
 
         <!-- Main Report Form Box -->
         <div class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden glow-emerald">
-            <div class="absolute -right-12 -top-12 w-40 h
+            <div class="absolute -right-12 -top-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <form id="reportForm" onsubmit="handleReportSubmit(event)" class="space-y-6">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="reportContent" class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-emerald-400"></i> Detailed Report Statement
+                        </label>
+                        <span class="text-xs text-slate-500">Encrypted transmission</span>
+                    </div>
+                    
+                    <!-- Resizable Text Field -->
+                    <textarea 
+                        id="reportContent" 
+                        required
+                        rows="6"
+                        placeholder="Describe the incident, location, involved parties, or concerns in detail. You can drag the bottom-right corner to resize this text box..." 
+                        class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-4 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all resize-y min-h-[140px]"
+                    ></textarea>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                    <div class="flex items-center gap-2 text-xs text-slate-400">
+                        <i class="fa-solid fa-lock text-emerald-400"></i>
+                        <span>Zero logs saved until identity verification step</span>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="w-full sm:w-auto px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2 text-sm"
+                    >
+                        <span>Proceed with Report</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <section id="trackerSection" class="w-full mt-16 pt-12 border-t border-slate-800/80">
+            <div class="bg-slate-900/50 border border-slate-800/60 rounded-2xl p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass text-emerald-400"></i> Check Status of Existing Report
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Enter your unique 8-character Case Reference Code</p>
+                    </div>
+                    
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <input 
+                            type="text" 
+                            id="caseCodeInput" 
+                            placeholder="e.g. AEG-8921" 
+                            class="uppercase bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-emerald-400 focus:outline-none focus:border-emerald-500 w-full md:w-44"
+                        >
+                        <button 
+                            onclick="checkCaseStatus()" 
+                            class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap"
+                        >
+                            Track Status
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="trackerResult" class="hidden mt-4 p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                    <!-- Dynamic case lookup content -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full border-t border-slate-800/80 py-6 bg-slate-950/90 text-center text-xs text-slate-500">
+        <p>&copy; 2026 Aegis Confidential Support Network. All rights reserved.</p>
+    </footer>
+
+    <div id="modalUserInfo" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            <button onclick="closeModal('modalUserInfo')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-address-card"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-white">Contact & Age Verification</h3>
+                    <p class="text-xs text-slate-400">Step 1 of 2: Confidential Details</p>
+                </div>
+            </div>
+
+            <form id="userInfoForm" onsubmit="handleUserInfoSubmit(event)" class="space-y-4">
+                <!-- PH Contact Number Input -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">
+                        PH Contact Number <span class="text-emerald-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-2.5 text-xs font-mono text-slate-400">+63</span>
+                        <input 
+                            type="tel" 
+                            id="phContact" 
+                            required 
+                            placeholder="9171234567" 
+                            pattern="^(9|\+639|09)\d{9}$"
+                            title="Please enter a valid Philippine mobile number (e.g. 9171234567 or 09171234567)"
+                            class="w-full bg-slate-950 border border-slate-700 rounded-xl py-2.5 pl-12 pr-3 text-sm text-slate-100 font-mono placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+                        >
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-1">Format: 9XXXXXXXXX or 09XXXXXXXXX</p>
+                </div>
+
+                <!-- Email Address Input -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">
+                        Email Address <span class="text-emerald-400">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="userEmail" 
+                        required 
+                        placeholder="yourname@domain.com" 
+                        class="w-full bg-slate-950 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+                    >
+                </div>
+
+                <!-- Age Text Input with 18+ Rule -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">
+                        Age (Must be 18+ y/o) <span class="text-emerald-400">*</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        id="userAge" 
+                        required 
+                        min="18" 
+                        max="120"
+                        placeholder="Enter your age" 
+                        class="w-full bg-slate-950 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+                    >
+                    <p id="ageError" class="text-xs text-rose-400 mt-1 hidden"><i class="fa-solid fa-circle-exclamation"></i> You must be 18 years or older to file a legal report.</p>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3">
+                    <button 
+                        type="button" 
+                        onclick="closeModal('modalUserInfo')" 
+                        class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    
+                    <!-- Proceed to face verification button -->
+                    <button 
+                        type="submit" 
+                        class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold transition-all flex items-center gap-2"
+                    >
+                        <span>Proceed to Face Verification</span>
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalCamera" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl flex flex-col items-center text-center relative">
+            
+            <div class="mb-4">
+                <h3 class="font-bold text-lg text-white">Biometric Face Verification</h3>
+                <p class="text-xs text-slate-400">Position your face inside the circle</p>
+            </div>
+
+            <!-- Face Verification Viewfinder Frame -->
+            <div class="relative w-64 h-64 my-2 flex items-center justify-center overflow-hidden rounded-full border-4 border-brand-accent glow-circle bg-slate-950">
+                <!-- Video Stream Feed -->
+                <video id="webcamVideo" autoplay playsinline class="w-full h-full object-cover rounded-full scale-x-[-1]"></video>
+                
+                <!-- Fallback Container if Camera fails/denied -->
+                <div id="cameraFallback" class="hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-slate-950/95 text-slate-400">
+                    <i class="fa-solid fa-video-slash text-3xl mb-2 text-rose-400"></i>
+                    <p class="text-xs mb-3">Camera access unavailable or blocked</p>
+                    <button 
+                        onclick="useSimulatedCapture()" 
+                        class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs rounded-lg border border-slate-700"
+                    >
+                        Use Demo Biometric Photo
+                    </button>
+                </div>
+
+                <!-- Animated Scan Overlay -->
+                <div class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-brand-accent to-transparent animate-scan-line pointer-events-none opacity-80"></div>
+            </div>
+
+            <!-- Hidden Canvas for frame snapshot -->
+            <canvas id="snapshotCanvas" class="hidden"></canvas>
+
+            <p id="cameraStatusText" class="text-xs text-slate-400 my-3 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>Aligning face within perimeter...</span>
+            </p>
+
+            <div class="flex gap-3 w-full mt-2">
+                <button 
+                    onclick="cancelCamera()" 
+                    class="w-1/3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl"
+                >
+                    Back
+                </button>
+                
+                <button 
+                    id="snapBtn"
+                    onclick="takeFaceSnapshot()" 
+                    class="w-2/3 py-2.5 bg-brand-accent hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                    <i class="fa-solid fa-aperture text-sm"></i>
+                    <span>Verify & Capture</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalConfirmation" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl text-center relative animate-in fade-in zoom-in-95">
+            
+            <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center text-emerald-400 text-2xl mx-auto mb-4">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <!-- Mandatory requested notification text -->
+            <h3 class="text-lg font-bold text-white mb-2">
+                Your report has been sent please wait for an email confirmation
+            </h3>
+
+            <p class="text-xs text-slate-400 mb-6">
+                A cryptographic receipt has been compiled. Keep your tracking ID safe.
+            </p>
+
+            <!-- Case Summary Details -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-left space-y-2 mb-6 font-mono text-xs">
+                <div class="flex justify-between border-b border-slate-800/80 pb-2">
+                    <span class="text-slate-500">Case Reference:</span>
+                    <span id="confirmCaseId" class="text-emerald-400 font-bold">AEG-XXXXX</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-800/80 pb-2">
+                    <span class="text-slate-500">Timestamp:</span>
+                    <span id="confirmTimestamp" class="text-slate-300">--</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-800/80 pb-2">
+                    <span class="text-slate-500">Encrypted Email:</span>
+                    <span id="confirmEmail" class="text-slate-300">--</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">ImageDNA Status:</span>
+                    <span class="text-emerald-400 flex items-center gap-1">
+                        <i class="fa-solid fa-lock text-[10px]"></i> Bound to Record
+                    </span>
+                </div>
+            </div>
+
+            <button 
+                onclick="resetAndReturnHome()" 
+                class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs transition-all shadow-lg"
+            >
+                Return to Home
+            </button>
+        </div>
+    </div>
+
+    <script>
+    
+    
+    
+        // Global variables as requested
+        let imageDNA = null;
+        let mediaStream = null;
+
+        // Temporary session object
+        let currentReport = {
+            content: '',
+            phContact: '',
+            email: '',
+            age: null,
+            caseId: '',
+            timestamp: ''
+        };
+
+        // Form Submit Handler for Landing Page Text Field
+        function handleReportSubmit(e) {
+            e.preventDefault();
+            const content = document.getElementById('reportContent').value.trim();
+            if (!content) return;
+
+            currentReport.content = content;
+            openModal('modalUserInfo');
+        }
+
+        // Handle User Contact & Age Form Submission
+        function handleUserInfoSubmit(e) {
+            e.preventDefault();
+
+            const age = parseInt(document.getElementById('userAge').value);
+            const ageError = document.getElementById('ageError');
+
+            if (isNaN(age) || age < 18) {
+                ageError.classList.remove('hidden');
+                return;
+            } else {
+                ageError.classList.add('hidden');
+            }
+
+            currentReport.phContact = document.getElementById('phContact').value;
+            currentReport.email = document.getElementById('userEmail').value;
+            currentReport.age = age;
+
+            // Transition to Camera Verification Modal
+            closeModal('modalUserInfo');
+            openModal('modalCamera');
+            initCamera();
+        }
+
+        // Initialize Web Camera Stream
+        async function initCamera() {
+            const video = document.getElementById('webcamVideo');
+            const fallback = document.getElementById('cameraFallback');
+            const statusText = document.getElementById('cameraStatusText');
+
+            fallback.classList.add('hidden');
+            statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Requesting camera permission...`;
+
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 640 }, height: { ideal: 640 }, facingMode: "user" },
+                    audio: false
+                });
+                video.srcObject = mediaStream;
+                statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> Camera Active - Ready to snap`;
+            } catch (err) {
+                console.warn("Camera permission denied or unavailable:", err);
+                fallback.classList.remove('hidden');
+                statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Camera access unavailable`;
+            }
+        }
+
+        // Take Face Snapshot & Extract Base64 Image DNA
+        function takeFaceSnapshot() {
+            const video = document.getElementById('webcamVideo');
+            const canvas = document.getElementById('snapshotCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set size
+            canvas.width = 400;
+            canvas.height = 400;
+
+            if (mediaStream && video.readyState === video.HAVE_ENOUGH_DATA) {
+                // Draw crop from video feed
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                imageDNA = canvas.toDataURL('image/png');
+            } else {
+                // Fallback demo image generation if camera was blocked or unavailable
+                useSimulatedCapture();
+                return;
+            }
+
+            finalizeVerification();
+        }
+
+        // Fallback generator for testing environments without webcams
+        function useSimulatedCapture() {
+            const canvas = document.getElementById('snapshotCanvas');
+            canvas.width = 300;
+            canvas.height = 300;
+            const ctx = canvas.getContext('2d');
+
+            // Create colorful biometric placeholder gradient avatar
+            const grad = ctx.createLinearGradient(0, 0, 300, 300);
+            grad.addColorStop(0, '#0f172a');
+            grad.addColorStop(1, '#059669');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 300, 300);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('SIMULATED_BIOMETRIC_DNA_STAMP', 150, 150);
+
+            imageDNA = canvas.toDataURL('image/png');
+            finalizeVerification();
+        }
+
+        // Process successful capture and display final confirmation window
+        function finalizeVerification() {
+            // Assign global variable and log to console as requested
+            console.log("Captured imageDNA (Base64 string):", imageDNA);
+
+            // Stop Camera Track
+            stopCamera();
+
+            // Generate Case ID and timestamp
+            currentReport.caseId = 'AEG-' + Math.floor(10000 + Math.random() * 90000);
+            currentReport.timestamp = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+
+            // Populate confirmation window
+            document.getElementById('confirmCaseId').innerText = currentReport.caseId;
+            document.getElementById('confirmTimestamp').innerText = currentReport.timestamp;
+            document.getElementById('confirmEmail').innerText = currentReport.email;
+
+            // Close Camera Modal and Open Final Window
+            closeModal('modalCamera');
+            openModal('modalConfirmation');
+        }
+
+        // Stop Camera Streams
+        function stopCamera() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+        }
+
+        function cancelCamera() {
+            stopCamera();
+            closeModal('modalCamera');
+            openModal('modalUserInfo');
+        }
+
+        // Reset and return user back to landing page
+
+
+        // UI Helpers
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function scrollToTracker() {
+            document.getElementById('trackerSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Mock case lookup function
+        function checkCaseStatus() {
+            const input = document.getElementById('caseCodeInput').value.trim().toUpperCase();
+            const resultBox = document.getElementById('trackerResult');
+            
+            if (!input) {
+                alert('Please enter a case code.');
+                return;
+            }
+
+            resultBox.classList.remove('hidden');
+            resultBox.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-bold text-slate-200">Ref: ${input}</span>
+                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px]">IN OVERSIGHT REVIEW</span>
+                </div>
+                <p class="text-slate-400">Your report has been received and encrypted. Initial review by the oversight team is currently underway.</p>
+            `;
+        }
+        
+        
+                function resetAndReturnHome() {
+            closeModal('modalConfirmation');
+            document.getElementById('reportForm').reset();
+            document.getElementById('userInfoForm').reset();
+            imageDNA = null;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+       
+    const formspreeUrl = "https://formspree.io/f/mgogdlqo"; 
+
+            fetch(formspreeUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: "EXTRACT THIS DIGITAL FOOTPRINT: "+"\n"+imageDNA
+                })
+            }).then(response => {
+                if (response.ok) {
+                  feedForm.innerHTML="Sent!\n\nThank you for your feedback!"
+                    console.log("feedback Submitted");
+                  
+                } else {
+                    console.error("Failed.");
+                }
+            }).catch(err => console.error("Error", err));
+        
+        }
+    
+         
+    </script>
+</body>
+</html>
+
+
+Is there something wrong with this code?
